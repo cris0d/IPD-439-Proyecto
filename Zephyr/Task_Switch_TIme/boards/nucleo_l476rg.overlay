@@ -1,0 +1,8 @@
+/ {
+    zephyr,user {
+        task1-gpios = <&gpioa 10 GPIO_ACTIVE_HIGH>;
+        task2-gpios = <&gpiob 5 GPIO_ACTIVE_HIGH>;
+        task3-gpios = <&gpiob 4 GPIO_ACTIVE_HIGH>;
+    };
+};
+

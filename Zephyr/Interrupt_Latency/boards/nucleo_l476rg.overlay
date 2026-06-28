@@ -1,0 +1,5 @@
+/ {
+	zephyr,user {
+		task1-gpios = <&gpioa 10 GPIO_ACTIVE_HIGH>;   /* equivalente a PA10: salida del ISR */
+	};
+};
