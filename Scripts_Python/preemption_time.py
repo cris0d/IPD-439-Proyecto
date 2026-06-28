@@ -13,11 +13,8 @@ with open('pt.csv', 'r') as f:
             'taskHPT': int(row['TaskHPT'])
         })
 
-# IMPORTANTE: el CSV es un export de "solo transiciones" (Saleae edge export),
-# así que el timestamp de cada fila YA ES el instante exacto del flanco.
-# No promediar con la fila anterior (ver lección aprendida en Interrupt Latency).
 
-# --- Paso 1: extraer flancos de SUBIDA de TaskLPT (T0: dispara osSemaphoreRelease / k_sem_give) ---
+# Extraer flancos de SUBIDA de TaskLPT
 lpt_rises = []
 for i in range(1, len(rows)):
     prev = rows[i - 1]
@@ -25,7 +22,7 @@ for i in range(1, len(rows)):
     if prev['taskLPT'] == 0 and curr['taskLPT'] == 1:
         lpt_rises.append(curr['time'])
 
-# --- Paso 2: extraer flancos de SUBIDA de TaskHPT (T1: retoma el CPU tras la preemption) ---
+# Extraer flancos de SUBIDA de TaskHPT
 hpt_rises = []
 for i in range(1, len(rows)):
     prev = rows[i - 1]
@@ -33,9 +30,8 @@ for i in range(1, len(rows)):
     if prev['taskHPT'] == 0 and curr['taskHPT'] == 1:
         hpt_rises.append(curr['time'])
 
-# --- Paso 3: para cada subida de LPT, buscar la SIGUIENTE subida de HPT ---
 # PTmedido = (t_subida,HPT - t_subida,LPT)
-MAX_WINDOW_S = 0.0005  # 500 µs: ventana generosa, ajusta si ves outliers
+MAX_WINDOW_S = 0.0005  
 
 pt_values = []
 for t_lpt in lpt_rises:
@@ -49,7 +45,6 @@ for t_lpt in lpt_rises:
     if 0 < delta < MAX_WINDOW_S:
         pt_values.append(delta * 1e6)  # convertir a µs
 
-# Overhead de UNA sola llamada a gpio_pin_set_dt() ya calibrado: 265.213 ns
 OVERHEAD_GPIO_US = 0.265213
 
 print("=" * 50)
