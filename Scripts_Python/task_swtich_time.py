@@ -12,7 +12,7 @@ with open('digital.csv', 'r') as f:
             'taskB': int(row['TaskB'])
         })
 
-# Calcular TST A→B: tiempo entre bajada de TaskA y subida de TaskB
+# Calcular TST A->B: tiempo entre bajada de TaskA y subida de TaskB
 tst_ab = []
 tst_ba = []
 
@@ -32,7 +32,7 @@ for i in range(1, len(rows) - 1):
                     tst_ab.append(tst)
                 break
 
-    # Bajada de TaskB (1→0)
+    # Bajada de TaskB (1->0)
     if prev['taskB'] == 1 and curr['taskB'] == 0:
         t_fall_b = curr['time']
         # Buscar siguiente subida de TaskA
