@@ -13,10 +13,6 @@ with open('it.csv', 'r') as f:
             'boton_it': int(row['Boton_IT'])
         })
 
-# --- Paso 1: extraer flancos de bajada del botón con DEBOUNCE ---
-# IMPORTANTE: el CSV es un export de "solo transiciones" (Saleae edge export),
-# así que el timestamp de cada fila YA ES el instante exacto del flanco.
-# No promediar con la fila anterior.
 DEBOUNCE_WINDOW_S = 0.005  # 5 ms
 
 button_falls = []
@@ -28,7 +24,6 @@ for i in range(1, len(rows)):
         if not button_falls or (t_fall - button_falls[-1]) > DEBOUNCE_WINDOW_S:
             button_falls.append(t_fall)
 
-# --- Paso 2: extraer flancos de subida de TaskA (ISR) ---
 taskA_rises = []
 for i in range(1, len(rows)):
     prev = rows[i - 1]
@@ -36,8 +31,7 @@ for i in range(1, len(rows)):
     if prev['taskA'] == 0 and curr['taskA'] == 1:
         taskA_rises.append(curr['time'])
 
-# --- Paso 3: para cada caída de botón, buscar la SIGUIENTE subida de TaskA ---
-MAX_WINDOW_S = 0.00002  # 20 µs en vez de 1 ms
+MAX_WINDOW_S = 0.00002  
 
 il_values = []
 
@@ -52,7 +46,8 @@ for t_fall in button_falls:
     if 0 < delta < MAX_WINDOW_S:
         il_values.append(delta * 1e6)  # convertir a µs
 
-OVERHEAD_GPIO_US = 0.265213
+
+OVERHEAD_GPIO_US = 0.265213 # Overhead medido de la funcion set-reset
 
 print("=" * 50)
 print("INTERRUPT LATENCY — Zephyr STM32L476RG")
