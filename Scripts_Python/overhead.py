@@ -11,8 +11,7 @@ with open('overhead.csv', 'r') as f:
             'taskA': int(row['taskA']),
         })
 
-# Calcular ancho de pulso: tiempo entre subida (0->1) y bajada (1->0) de TaskA
-# Esto corresponde a: gpio_pin_set_dt(&taskA_pin, 1) seguido de gpio_pin_set_dt(&taskA_pin, 0)
+
 pulse_widths = []
 
 for i in range(1, len(rows)):
